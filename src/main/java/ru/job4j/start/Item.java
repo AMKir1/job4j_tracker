@@ -1,9 +1,15 @@
 package ru.job4j.start;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "items")
 public class Item {
-	/**
-	* Params.
-	*/
+
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public int id;
 	private String name;
 
 
