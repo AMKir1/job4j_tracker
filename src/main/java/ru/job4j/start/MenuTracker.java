@@ -38,8 +38,8 @@ public class MenuTracker {
     private void showItem(Item item) {
         output.accept("______________________");
         output.accept("Name: " + item.getName());
-        output.accept("Description: " + item.getDescription());
-        output.accept("Create: " + item.getCreate());
+        output.accept("Description: ");
+        output.accept("Create: ");
         output.accept("Id: " + item.getId());
         output.accept("______________________");
     }
@@ -79,7 +79,7 @@ public class MenuTracker {
             String itemId = Integer.toString(id++);
             String itemName = input.ask("Plesae, enter the item's name: ");
             String itemDesc = input.ask("Plesae, enter the item's description: ");
-            Item item = new Item(itemName, itemDesc, System.currentTimeMillis(), itemId);
+            Item item = new Item(itemName, Integer.parseInt(itemId));
             if (tracker.add(item) != null) {
                 output.accept("Your item was added:");
                 showItem(item);
@@ -140,7 +140,7 @@ public class MenuTracker {
             String itemId = input.ask("Plesae, enter the item's id, which you want to find: ");
             List<Item> items = tracker.findAll();
             for (Item item : items) {
-                if (item.getId().equals(itemId)) {
+                if (item.getId() == Integer.parseInt(itemId)) {
                     output.accept("It's your item:");
                     showItem(item);
                     find = true;
@@ -186,7 +186,7 @@ public class MenuTracker {
             if (tracker.findById(itemId) != null) {
                 String itemName = input.ask("Plesae, enter the item's name: ");
                 String itemDesc = input.ask("Plesae, enter the item's description: ");
-                Item editItem = new Item(itemName, itemDesc, System.currentTimeMillis(), itemId);
+                Item editItem = new Item(itemName, Integer.parseInt(itemId));
                 tracker.replace(itemId, editItem);
             } else {
                 output.accept("We can't find your Item. Sorry:(");

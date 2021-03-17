@@ -81,7 +81,7 @@ public class SqlTracker implements Store {
         try (Statement st = cn.createStatement();
              ResultSet rs = st.executeQuery("select * from items")) {
             while (rs.next()) {
-                listItems.add(new Item(rs.getString("id"), rs.getString("name")));
+                listItems.add(new Item(rs.getInt("id"), rs.getString("name")));
             }
         } catch (SQLException e) {
             System.err.println("DB error: " + e);
@@ -95,7 +95,7 @@ public class SqlTracker implements Store {
         try (PreparedStatement st = cn.prepareStatement("select * from items WHERE name = '" + name + "'")) {
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
-                listItems.add(new Item(rs.getString("id"), rs.getString("name")));
+                listItems.add(new Item(rs.getInt("id"), rs.getString("name")));
             }
             rs.close();
         } catch (SQLException e) {
@@ -110,7 +110,7 @@ public class SqlTracker implements Store {
         try (PreparedStatement st = cn.prepareStatement("select * from items WHERE id = '" + id + "'")) {
             ResultSet rs = st.executeQuery();
                 if (rs.next()) {
-                    item = new Item(rs.getString("id"), rs.getString("name"));
+                    item = new Item(rs.getInt("id"), rs.getString("name"));
                 }
             rs.close();
         } catch (SQLException e) {

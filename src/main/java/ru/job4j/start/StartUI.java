@@ -53,10 +53,10 @@ public class StartUI {
 		String itemId = Integer.toString(this.id++);
 		String itemName = this.input.ask("Plesae, enter the item's name: ");
 		String itemDesc = this.input.ask("Plesae, enter the item's description: ");
-		Item item1 = new Item(itemName, itemDesc, System.currentTimeMillis(), itemId);
+		Item item1 = new Item(itemName, Integer.parseInt(itemId));
 		this.tracker.add(item1);
         output.accept("Your item was added:");
-        output.accept("Name: " + item1.getName() + "\n" + "Description: " + item1.getDescription() + "\n" + "Cretae: " + item1.getCreate() + "\n" + "Id: " + item1.getId() + "\n");
+        output.accept("Name: " + item1.getName() + "\n" + "Description: " + "\n" + "Cretae: " + "\n" + "Id: " + item1.getId() + "\n");
 		this.init();
 	}
 	/**
@@ -70,7 +70,7 @@ public class StartUI {
 			for (Item item : items) {
 				if (item.getName() != null) {
 					position++;
-                    output.accept("Space: " + position + "\n" + "Name: " + item.getName() + "\n" + "Description: " + item.getDescription() + "\n" + "Cretae: " + item.getCreate() + "\n" + "Id: " + item.getId() + "\n");
+                    output.accept("Space: " + position + "\n" + "Name: " + item.getName() + "\n" + "Description: " +  "\n" + "Cretae: " +  "\n" + "Id: " + item.getId() + "\n");
 				} else {
                     output.accept("NO Items");
 				}
@@ -88,10 +88,10 @@ public class StartUI {
 		String itemName = this.input.ask("Plesae, enter the item's name: ");
 		String itemDesc = this.input.ask("Plesae, enter the item's description: ");
 		String itemId =  input.ask("Plesae, enter the item's id, which you want to edit: ");
-		Item editItem1 = new Item(itemName, itemDesc, System.currentTimeMillis(), itemId);
+		Item editItem1 = new Item(itemName, Integer.parseInt(itemId));
 		this.tracker.replace("1", editItem1);
         output.accept("It's Edited item:" + "\n");
-        output.accept("Name: " + editItem1.getName() + "\n" + "Description: " + editItem1.getDescription() + "\n" + "Id: " + editItem1.getId() + "\n");
+        output.accept("Name: " + editItem1.getName() + "\n" + "Description: " + "\n" + "Id: " + editItem1.getId() + "\n");
 		this.init();
 	}
 	/**
@@ -156,8 +156,8 @@ public class StartUI {
 	}
 	private void showItem(Item item) {
         output.accept("Name: " + item.getName());
-        output.accept("Description: " + item.getDescription());
-        output.accept("Create: " + item.getCreate());
+        output.accept("Description: ");
+        output.accept("Create: ");
         output.accept("Id: " + item.getId());
 	}
 }

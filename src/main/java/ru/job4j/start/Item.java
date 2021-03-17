@@ -5,82 +5,37 @@ public class Item {
 	* Params.
 	*/
 	private String name;
-	/**
-	* Params.
-	*/
-	private String description;
-	/**
-	* Params.
-	*/
-	private long create;
-	/**
-	* Params.
-	*/
-	private int idint = 0;
-	public String id = String.valueOf(idint);
 
-	
-	/**
-	* Default Constructor.
-	*/
-	protected Item() {
-	}
-	/**
-	* Constructor
-	* @param name - first ards.
-	* @param description - second ards.
-	* @param create - third ards.
-	*/
-	protected Item(String name, String description, long create, String id) {
+
+	protected Item() {}
+
+	protected Item(String name, int id) {
 		this.name = name;
-		this.description = description;
-		this.create = create;
 		this.id = id;
-		this.idint++;
 	}
 
 	protected Item(String name) {
 		this.name = name;
 	}
 
-	protected Item(String id, String name) {
+	protected Item(int id, String name) {
 		this.id = id;
 		this.name = name;
 	}
 
-	/**
-	* Get Name.
-	* @return this.name.
-	*/
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public String getName() {
 		return this.name;
 	}
-	/**
-	* Get Description.
-	* @return this.description.
-	*/
-	public String getDescription() {
-		return this.description;
-	}
-	/**
-	* Get Create.
-	* @return this.create.
-	*/
-	public long getCreate() {
-		return this.create;
-	}
-	/**
-	* Get Id.
-	* @return this.id.
-	*/
-	public String getId() {
+
+	public int getId() {
 		 return this.id;
 	}
-	/**
-	* Set Id.
-	* @param id - first ards.
-	*/
-	public void setId(String id) {
+
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -88,9 +43,6 @@ public class Item {
 	public String toString() {
 		return "Item{"
 				+ "name='" + name + '\''
-				+ ", description='" + description + '\''
-				+ ", create=" + create
-				+ ", idint=" + idint
 				+ ", id='" + id + '\''
 				+ '}';
 	}
