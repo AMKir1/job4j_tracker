@@ -6,6 +6,7 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public class HibernateRun {
@@ -22,10 +23,36 @@ public class HibernateRun {
             Item rsl = findById(item.getId(), sf);
             System.out.println(rsl);
             delete(rsl.getId(), sf);
+
+            Item item2 = new Item();
+            item2.setName("test2");
+            item2.setCreated(new Timestamp(System.currentTimeMillis()));
+            item2.setDescription("desc2");
+            create(item2, sf);
+
+            Item item3 = new Item();
+            item3.setName("test3");
+            item3.setDescription("desc3");
+            create(item3, sf);
+
+            Item item4 = new Item();
+            item4.setCreated(new Timestamp(System.currentTimeMillis()));
+            create(item4, sf);
+
+            Item item5 = new Item();
+            item5.setDescription("desc5");
+            create(item5, sf);
+
+            Item item6 = new Item();
+            item3.setName("desc6");
+            create(item6, sf);
+
             List<Item> list = findAll(sf);
             for (Item it : list) {
                 System.out.println(it);
             }
+
+
         }  catch (Exception e) {
             e.printStackTrace();
         } finally {
