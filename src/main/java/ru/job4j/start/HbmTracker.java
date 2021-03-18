@@ -3,7 +3,6 @@ package ru.job4j.start;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -12,28 +11,34 @@ import java.util.List;
 
 
 public class HbmTracker implements Store, AutoCloseable {
-    private final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-            .configure().build();
-    private final SessionFactory sf = new MetadataSources(registry)
-            .buildMetadata().buildSessionFactory();
+    private final StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure().build();
+    private final SessionFactory sf = new MetadataSources(registry).buildMetadata().buildSessionFactory();
 
+    public static void main(String[] args) throws Exception {
+        HbmTracker ht = new HbmTracker();
+        Item item = new Item(2, "Test 222");
+        ht.add(item);
+        ht.replace("2", item);
+//        ht.delete("33");
+        System.out.println(ht.findById("37").toString());
+        ht.findByName("Test 1").forEach(System.out::println);
+        ht.findAll().forEach(System.out::println);
+    }
 
     @Override
     public void init() {
-
     }
 
     @Override
     public Item add(Item item) {
         Session session = sf.openSession();
-        Transaction t = null;
         try {
-            t = session.beginTransaction();
+            session.beginTransaction();
             session.save(item);
-            t.commit();
+            session.getTransaction().commit();
         } catch (HibernateException e) {
-            if (t != null) {
-                t.rollback();
+            if (session.getTransaction() != null) {
+                session.getTransaction().rollback();
             }
             e.printStackTrace();
         } finally {
@@ -45,20 +50,17 @@ public class HbmTracker implements Store, AutoCloseable {
     @Override
     public boolean replace(String id, Item item) {
         boolean result = false;
-        Item i = findById(id);
-        i.setName(item.getName());
-        i.setDescription(item.getDescription());
-        i.setCreated(item.getCreated());
         Session session = sf.openSession();
-        Transaction t = null;
+        Item newitem = new Item(Integer.parseInt(id), item.getName(), item.getDescription(), item.getCreated());
         try {
-            t = session.beginTransaction();
-            session.update(i);
-            t.commit();
+            init();
+            session.beginTransaction();
+            session.update(newitem);
+            session.getTransaction().commit();
             result = true;
         } catch (HibernateException e) {
-            if (t != null) {
-                t.rollback();
+            if (session.getTransaction() != null) {
+                session.getTransaction().rollback();
             }
             e.printStackTrace();
         } finally {
@@ -69,19 +71,18 @@ public class HbmTracker implements Store, AutoCloseable {
 
     @Override
     public boolean delete(String id) {
-        Session session = sf.openSession();
-        Transaction t = null;
         boolean result = false;
+        Session session = sf.openSession();
+        Item delitem = new Item(Integer.parseInt(id), null);
         try {
-            t = session.beginTransaction();
-            Item item = new Item(null);
-            item.setId(Integer.parseInt(id));
-            session.delete(item);
-            t.commit();
+            init();
+            session.beginTransaction();
+            session.delete(delitem);
+            session.getTransaction().commit();
             result = true;
         } catch (HibernateException e) {
-            if (t != null) {
-                t.rollback();
+            if (session.getTransaction() != null) {
+                session.getTransaction().rollback();
             }
             e.printStackTrace();
         } finally {
@@ -93,60 +94,30 @@ public class HbmTracker implements Store, AutoCloseable {
     @Override
     public List<Item> findAll() {
         Session session = sf.openSession();
-        List<Item> result = null;
-        Transaction t = null;
-        try {
-            t = session.beginTransaction();
-            result = session.createQuery("from ru.job4j.start.Item").list();
-            t.commit();
-        } catch (HibernateException e) {
-            if (t != null) {
-                t.rollback();
-            }
-            e.printStackTrace();
-        } finally {
-            session.close();
-        }
+        session.beginTransaction();
+        List<Item> result = session.createQuery("from ru.job4j.start.Item").list();
+        session.getTransaction().commit();
+        session.close();
         return result;
     }
 
     @Override
     public List<Item> findByName(String key) {
         Session session = sf.openSession();
-        List<Item> result = null;
-        Transaction t = null;
-        try {
-            t = session.beginTransaction();
-            result = session.createQuery("from ru.job4j.start.Item where name=:" + key).list();
-            t.commit();
-        } catch (HibernateException e) {
-            if (t != null) {
-                t.rollback();
-            }
-            e.printStackTrace();
-        } finally {
-            session.close();
-        }
+        session.beginTransaction();
+        List<Item> result = session.createQuery("from ru.job4j.start.Item where name = \'" + key + "\'").list();
+        session.getTransaction().commit();
+        session.close();
         return result;
     }
 
     @Override
     public Item findById(String id) {
         Session session = sf.openSession();
-        Transaction t = null;
-        Item result = null;
-        try {
-            t = session.beginTransaction();
-            result = session.get(Item.class, id);
-            t.commit();
-        } catch (HibernateException e) {
-            if (t != null) {
-                t.rollback();
-            }
-            e.printStackTrace();
-        } finally {
-            session.close();
-        }
+        session.beginTransaction();
+        Item result = session.get(Item.class, Integer.parseInt(id));
+        session.getTransaction().commit();
+        session.close();
         return result;
     }
 

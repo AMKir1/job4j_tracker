@@ -53,7 +53,7 @@ public class StartUI {
 		String itemId = Integer.toString(this.id++);
 		String itemName = this.input.ask("Plesae, enter the item's name: ");
 		String itemDesc = this.input.ask("Plesae, enter the item's description: ");
-		Item item1 = new Item(itemName, Integer.parseInt(itemId));
+		Item item1 = new Item(Integer.parseInt(itemId), itemName);
 		this.tracker.add(item1);
         output.accept("Your item was added:");
         output.accept("Name: " + item1.getName() + "\n" + "Description: " + "\n" + "Cretae: " + "\n" + "Id: " + item1.getId() + "\n");
@@ -88,7 +88,7 @@ public class StartUI {
 		String itemName = this.input.ask("Plesae, enter the item's name: ");
 		String itemDesc = this.input.ask("Plesae, enter the item's description: ");
 		String itemId =  input.ask("Plesae, enter the item's id, which you want to edit: ");
-		Item editItem1 = new Item(itemName, Integer.parseInt(itemId));
+		Item editItem1 = new Item(Integer.parseInt(itemId), itemName);
 		this.tracker.replace("1", editItem1);
         output.accept("It's Edited item:" + "\n");
         output.accept("Name: " + editItem1.getName() + "\n" + "Description: " + "\n" + "Id: " + editItem1.getId() + "\n");

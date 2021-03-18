@@ -19,11 +19,6 @@ public class Item {
     protected Item() {
     }
 
-    protected Item(String name, int id) {
-        this.name = name;
-        this.id = id;
-    }
-
     public Item(int id, String name, String description, Timestamp created) {
         this.id = id;
         this.name = name;

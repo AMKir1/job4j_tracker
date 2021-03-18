@@ -79,7 +79,7 @@ public class MenuTracker {
             String itemId = Integer.toString(id++);
             String itemName = input.ask("Plesae, enter the item's name: ");
             String itemDesc = input.ask("Plesae, enter the item's description: ");
-            Item item = new Item(itemName, Integer.parseInt(itemId));
+            Item item = new Item(Integer.parseInt(itemId), itemName);
             if (tracker.add(item) != null) {
                 output.accept("Your item was added:");
                 showItem(item);
@@ -186,7 +186,7 @@ public class MenuTracker {
             if (tracker.findById(itemId) != null) {
                 String itemName = input.ask("Plesae, enter the item's name: ");
                 String itemDesc = input.ask("Plesae, enter the item's description: ");
-                Item editItem = new Item(itemName, Integer.parseInt(itemId));
+                Item editItem = new Item(Integer.parseInt(itemId), itemName);
                 tracker.replace(itemId, editItem);
             } else {
                 output.accept("We can't find your Item. Sorry:(");
