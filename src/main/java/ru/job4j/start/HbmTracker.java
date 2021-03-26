@@ -3,12 +3,13 @@ package ru.job4j.start;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-
 import java.util.List;
-
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class HbmTracker implements Store, AutoCloseable {
     private final StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure().build();
@@ -31,98 +32,75 @@ public class HbmTracker implements Store, AutoCloseable {
 
     @Override
     public Item add(Item item) {
-        Session session = sf.openSession();
-        try {
-            session.beginTransaction();
-            session.save(item);
-            session.getTransaction().commit();
-        } catch (HibernateException e) {
-            if (session.getTransaction() != null) {
-                session.getTransaction().rollback();
-            }
-            e.printStackTrace();
-        } finally {
-            session.close();
-        }
+        upsert(s -> s.save(item));
         return item;
     }
 
     @Override
     public boolean replace(String id, Item item) {
-        boolean result = false;
-        Session session = sf.openSession();
-        Item newitem = new Item(Integer.parseInt(id), item.getName(), item.getDescription(), item.getCreated());
-        try {
-            init();
-            session.beginTransaction();
-            session.update(newitem);
-            session.getTransaction().commit();
-            result = true;
-        } catch (HibernateException e) {
-            if (session.getTransaction() != null) {
-                session.getTransaction().rollback();
-            }
-            e.printStackTrace();
-        } finally {
-            session.close();
-        }
-        return result;
+        Item olditem = findById(id);
+        olditem.setName(item.getName());
+        olditem.setDescription(item.getDescription());
+        olditem.setCreated(item.getCreated());
+        return upsert(s -> s.update(olditem));
     }
 
     @Override
     public boolean delete(String id) {
-        boolean result = false;
-        Session session = sf.openSession();
-        Item delitem = new Item(Integer.parseInt(id), null);
-        try {
-            init();
-            session.beginTransaction();
-            session.delete(delitem);
-            session.getTransaction().commit();
-            result = true;
-        } catch (HibernateException e) {
-            if (session.getTransaction() != null) {
-                session.getTransaction().rollback();
-            }
-            e.printStackTrace();
-        } finally {
-            session.close();
-        }
-        return result;
+        return upsert(s -> s.delete(new Item(Integer.parseInt(id), null)));
     }
 
     @Override
     public List<Item> findAll() {
-        Session session = sf.openSession();
-        session.beginTransaction();
-        List<Item> result = session.createQuery("from ru.job4j.start.Item").list();
-        session.getTransaction().commit();
-        session.close();
-        return result;
+        return get(s -> s.createQuery("from ru.job4j.start.Item").list());
     }
 
     @Override
     public List<Item> findByName(String key) {
-        Session session = sf.openSession();
-        session.beginTransaction();
-        List<Item> result = session.createQuery("from ru.job4j.start.Item where name = \'" + key + "\'").list();
-        session.getTransaction().commit();
-        session.close();
-        return result;
+        return get(s -> s.createQuery("from ru.job4j.start.Item where name = \'" + key + "\'").list());
     }
 
     @Override
     public Item findById(String id) {
-        Session session = sf.openSession();
-        session.beginTransaction();
-        Item result = session.get(Item.class, Integer.parseInt(id));
-        session.getTransaction().commit();
-        session.close();
-        return result;
+        return get(s -> s.get(Item.class, Integer.parseInt(id)));
     }
 
     @Override
     public void close() throws Exception {
         StandardServiceRegistryBuilder.destroy(registry);
     }
+
+    private <T> T get(Function<Session, T> command) {
+        final Session s = sf.openSession();
+        final Transaction tn = s.beginTransaction();
+        try {
+            T res = command.apply(s);
+            tn.commit();
+            return res;
+        } catch (final Exception e) {
+            tn.rollback();
+            e.printStackTrace();
+        } finally {
+            s.close();
+        }
+        return null;
+    }
+
+    private boolean upsert(Consumer<Session> command) {
+        final Session s = sf.openSession();
+        final Transaction tn = s.beginTransaction();
+        try {
+            command.accept(s);
+            tn.commit();
+            return true;
+        } catch (final Exception e) {
+            tn.rollback();
+            e.printStackTrace();
+        } finally {
+            s.close();
+        }
+        return false;
+    }
+
+
 }
