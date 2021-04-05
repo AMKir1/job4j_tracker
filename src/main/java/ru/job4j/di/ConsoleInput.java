@@ -1,11 +1,13 @@
 package ru.job4j.di;
 
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import ru.job4j.start.Input;
 import ru.job4j.start.MenuOutException;
 
 import java.util.Scanner;
 @Component
+@Scope("prototype")
 public class ConsoleInput implements Input {
 	private final Scanner scanner = new Scanner(System.in);
 		
