@@ -15,7 +15,13 @@ public class Store {
         data.add(value);
     }
 
-    public List<String> getAll() {
-        return data;
+    //public List<String> getAll() {
+    //    return data;
+    //}
+
+    public void getAllByReact(Observe<String> observe) throws InterruptedException {
+        for (String datum : data) {
+            observe.receive(datum);
+        }
     }
 }

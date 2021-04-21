@@ -17,9 +17,10 @@ public class StartUI {
         store.add(this.input.ask("What is your whole name: "));
     }
 
-    public void print() {
-        for (String value : store.getAll()) {
-            System.out.println(value);
-        }
+    public void print() throws InterruptedException {
+       // for (String value : store.getAll()) {
+       //     System.out.println(value);
+       // }
+        store.getAllByReact(System.out::println);
     }
 }

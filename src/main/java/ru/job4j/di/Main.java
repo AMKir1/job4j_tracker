@@ -1,7 +1,7 @@
 package ru.job4j.di;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         Context context = new Context();
         context.reg(Store.class);
         context.reg(ConsoleInput.class);
@@ -12,8 +12,8 @@ public class Main {
         ui.add();
         ui.add();
 
-//        ui.add("Petr Arsentev");
-//        ui.add("Ivan ivanov");
+     //   ui.add("Petr Arsentev");
+     //   ui.add("Ivan ivanov");
         ui.print();
     }
 }
